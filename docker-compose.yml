@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  pdf-chatbot:
+    build: .
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./temp_pdfs:/app/temp_pdfs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_PATH=/app/models
+      - TEMP_PATH=/app/temp_pdfs
+    restart: unless-stopped

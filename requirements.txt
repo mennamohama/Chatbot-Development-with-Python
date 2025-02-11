@@ -1,0 +1,10 @@
+langchain==0.0.284
+sentence-transformers==2.2.2
+rank-bm25==0.2.2
+chromadb==0.4.7
+gradio==3.50.2
+pypdf==3.15.2
+numpy
+scikit-learn
+torch
+transformers
