@@ -1,14 +1,22 @@
 # PDF Question Answering System
 
-A Retrieval-Augmented Generation (RAG) system for PDF document analysis using hybrid search (semantic + keyword) with query expansion.
-
+This project implements a PDF question-answering chatbot that allows users to upload a PDF document and ask questions about its content. The system leverages both semantic and keyword-based search techniques to provide relevant answers from the PDF.
 ## Features
 
-- 📄 PDF document processing with intelligent chunking
-- 🔍 Hybrid search combining BM25 keyword search and semantic embeddings
+- 📄 PDF Extracts and cleans text from PDF documents, document processing with intelligent chunking
+- **Chunking:** Splits documents into smaller, manageable chunks with metadata for better retrieval.
+- 🔍 Hybrid search Combines semantic search (using vector embeddings) and keyword search (BM25) to find the best matches.
 - 💡 Query expansion and results reranking
 - 📈 Context-aware response generation
-- 🖥️ Gradio web interface
+- 🖥️ Gradio web interface A user-friendly Gradio-based interface for interacting with the chatbot.
+
+## Setup Instructions
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/your-username/pdf-chatbot.git
+   cd pdf-chatbot
 
 ## Technologies
 
