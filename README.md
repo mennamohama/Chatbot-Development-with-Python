@@ -1,172 +1,171 @@
 # PDF Question-Answering Chatbot
-
-A sophisticated chatbot application that enables users to upload PDF documents and ask questions about their content. The system uses advanced NLP techniques to provide accurate, context-aware responses based on the document content.
+An intelligent chatbot system that allows users to upload PDF documents and ask questions about their content. The system uses advanced language models and vector embeddings to provide accurate, context-aware responses.
 
 ## Features
-
 - PDF document processing and analysis
-- Interactive chat interface using Gradio
-- Context-aware question answering
-- Support for multiple PDF uploads
-- Document management system
-- Real-time status updates
-- Chat history tracking
+- Intelligent question-answering capabilities
+- Vector-based document search
+- Real-time chat interface
+- Multi-document support
+- Conversation history tracking
 
-## Prerequisites
+## Setup Instructions
 
-- Python 3.8+
+### Prerequisites
+- Python 3.8 or higher
 - Hugging Face API token
-- Docker
+- Docker 
 
-## Required Dependencies
-
-```bash
-pip install gradio
-pip install langchain
-pip install langchain-community
-pip install fastembed
-pip install chromadb
-pip install pypdf
+### Environment Variables
+The following environment variables need to be set:
+```
+HUGGINGFACEHUB_API_TOKEN=huggingface_token
+TEMP_PATH=/app/temp_pdfs  # Path for temporary PDF storage
 ```
 
-## Environment Setup
-
-1. Obtain a Hugging Face API token from [Hugging Face](https://huggingface.co/)
-2. Set up your environment variables:
-   ```bash
-   export HUGGINGFACEHUB_API_TOKEN=your_token_here
-   ```
-
-## Installation
+### Installation
 
 1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd pdf-chatbot
-   ```
-
-2. Install the required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. install Docker
-
 ```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate  # Windows
-## Usage
-Start the application:
-   ```bash
-   python main.py
-   ```
-### Using Docker (Recommended)
-
-```bash
-# Build and start the container
-docker compose up --build
-
-# Access the web interface at:
-# http://localhost:7860
+git clone [https://github.com/mennamohama/Chatbot-Development-with-Python/tree/main]
+cd pdf-chatbot
 ```
-2. Access the web interface through your browser (default: http://localhost:7860)
 
-3. Upload PDF documents using the file upload interface
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-4. Click "Process PDFs" to analyze the documents
+3. Run the application:
+```bash
+python app.py
+```
 
-5. Start asking questions about the document content
+The application will be available at `http://localhost:7860`
 
-## Features in Detail
+## API Documentation
 
-### Document Processing
-- Supports multiple PDF uploads
-- Automatic text extraction and chunking
-- Vector embeddings generation using FastEmbed
-- Document validation for format and size (10MB limit)
+### Core Classes
 
-### Chat Interface
-- Interactive chat display
-- Chat history tracking
-- Context-aware responses
-- Clear chat functionality
+#### PDFChatbot
+Main class that handles document processing and question answering.
 
-### Vector Store
-- ChromaDB for efficient document storage
-- Maximum Marginal Relevance (MMR) search
-- Configurable chunk size and overlap
+```python
+PDFChatbot(hf_token: str)
+```
 
-### Language Model
-- Uses Mistral-7B-Instruct-v0.2
-- Configurable temperature and response parameters
-- Built-in conversation history management
+##### Key Methods:
 
-## Configuration
+###### process_pdfs(pdf_files)
+```python
+def process_pdfs(pdf_files) -> tuple[str, str]
+```
+Processes uploaded PDF files and creates vector embeddings.
+- **Parameters**: List of PDF file objects
+- **Returns**: Tuple of (status_message, document_list)
 
-Key configuration parameters can be adjusted in the code:
+###### answer_question(question: str, history: List[tuple[str, str]])
+```python
+def answer_question(question: str, history: List[tuple[str, str]]) -> tuple[List[tuple[str, str]], str]
+```
+Processes user questions and generates responses.
+- **Parameters**:
+  - question: User's question
+  - history: Current chat history
+- **Returns**: Tuple of (updated_history, error_message)
 
-- `chunk_size`: Size of text chunks (default: 512)
-- `chunk_overlap`: Overlap between chunks (default: 50)
-- `max_new_tokens`: Maximum response length (default: 512)
-- `temperature`: Response randomness (default: 0.1)
+### Data Classes
 
-## Data Structures
-
-### ChatMessage
+#### ChatMessage
 ```python
 @dataclass
 class ChatMessage:
     role: str          # 'user' or 'assistant'
     content: str       # Message content
-    timestamp: datetime
+    timestamp: datetime  # Creation time
 ```
 
-### UploadedDocument
+#### UploadedDocument
 ```python
 @dataclass
 class UploadedDocument:
-    filename: str
+    filename: str       # File name
     upload_time: datetime
-    page_count: int
-    status: str
+    page_count: int    # Number of pages
+    status: str        # Processing status
 ```
+
+## Usage Guide
+
+### Document Upload
+1. Click the "Upload PDF Documents" button
+2. Select one or more PDF files (max 10MB each)
+3. Click "Process PDFs" to begin document analysis
+
+### Asking Questions
+1. Type your question in the input box
+2. Click "Ask" or press Enter
+3. The system will:
+   - Search relevant documents
+   - Generate a context-aware response
+   - Display the response in the chat interface
+
+### Managing Conversations
+- Use the "Clear Chat" button to reset the conversation
+- Previous conversations are maintained in the chat history
+- The system maintains context from previous messages
+
+## Technical Details
+
+### Vector Store Configuration
+- Using Chroma for vector storage
+- FastEmbed embeddings (gte-large model)
+- Maximum Marginal Relevance (MMR) search
+- Retrieves top 4 most relevant document chunks
+
+### Text Processing
+- Chunk size: 512 characters
+- Chunk overlap: 50 characters
+- RecursiveCharacterTextSplitter for document chunking
+
+### Language Model
+- Model: Mistral-7B-Instruct-v0.2
+- Configuration:
+  - Temperature: 0.1 (focused responses)
+  - Max tokens: 512
+  - Repetition penalty: 1.1
+  - Top-p: 0.9
 
 ## Error Handling
 
-The system includes comprehensive error handling for:
-- Invalid file formats
+The system includes robust error handling for:
+- Invalid file types
 - File size limits
 - Processing failures
-- Query errors
+- Query execution errors
+- Concurrent processing prevention
+
+## Security Considerations
+
+- File validation before processing
+- Size limits on uploads (10MB per file)
+- Restricted file types (PDF only)
+- Controlled temporary file storage
+- Sanitized user inputs
+
+## Performance Optimization
+
+- Efficient document chunking
+- Optimized vector search
+- Context window management
+- Conversation history limiting
+- Concurrent processing prevention
 
 ## Limitations
 
-- Maximum file size: 10MB per PDF
-- Supported format: PDF only
-- Processing time depends on document size
-- Requires active internet connection for model access
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## Acknowledgments
-
-- Built with [Gradio](https://gradio.app/)
-- Uses [LangChain](https://python.langchain.com/) for document processing
-- Powered by [Mistral AI](https://mistral.ai/) language model
-
-
-## Configuration
-
-Environment variables:
-- `TEMP_PATH`: PDF storage location (default: /app/temp_pdfs)
-- `MODEL_PATH`: Model cache directory (default: /app/models)
+- PDF format only
+- Maximum 5 messages in conversation context
+- Response length limited to 512 tokens
 
 ## License
 
